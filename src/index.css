@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
+.input {
+    @apply rounded-lg bg-purple-100 py-3 px-5 text-purple-900 placeholder-purple-800 placeholder-opacity-40 shadow-inner outline-none  focus:border  focus:border-fuchsia-400 focus:border-opacity-70 focus:bg-purple-200
+}
+.btn {
+    @apply rounded-lg bg-pink-400 px-5 py-3 text-white shadow-pink-200 hover:bg-opacity-80
+}
 @tailwind utilities;

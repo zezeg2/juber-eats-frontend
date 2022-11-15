@@ -1,2 +1,20 @@
 import React from 'react';
-export const LoggedOutRouter = () => <span>'Logged Out'</span>;
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { CreateAccount } from '../pages/create-account';
+import { Login } from '../pages/login';
+
+export const LoggedOutRouter = () => {
+  return (
+    <Router>
+      <Switch>
+        <Route path="/create-account">
+          <CreateAccount />
+        </Route>
+        <Route path="/">
+          <Login />
+        </Route>
+      </Switch>
+    </Router>
+  );
+};
