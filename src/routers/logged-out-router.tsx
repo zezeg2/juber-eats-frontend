@@ -1,6 +1,5 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
 import { CreateAccount } from '../pages/create-account';
 import { Login } from '../pages/login';
 

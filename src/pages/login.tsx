@@ -1,34 +1,86 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FormError } from '../components/form-error';
+import { gql, useMutation } from '@apollo/client';
+import {
+  LoginMutation,
+  LoginMutationVariables,
+} from '../__api__/LoginMutation';
+import logo from '../images/logo.svg';
+import { Button } from '../components/button';
+import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
+
+const LOGIN_MUTATION = gql`
+  mutation LoginMutation($loginInput: LoginInput!) {
+    login(input: $loginInput) {
+      isOK
+      error
+      token
+    }
+  }
+`;
 
 interface ILoginForm {
-  email?: string;
-  password?: string;
+  email: string;
+  password: string;
 }
+
 export const Login = () => {
   const {
     register,
+    watch,
     getValues,
-    formState: { errors },
+    setValue,
+    formState: { errors, isValid },
     handleSubmit,
-  } = useForm<ILoginForm>();
+  } = useForm<ILoginForm>({ mode: 'onBlur' });
 
-  const [showError, setShowError] = useState(false);
-  const onSubmit = () => {
+  const [loginMutation, { data: loginMutationResult, loading }] = useMutation<
+    LoginMutation,
+    LoginMutationVariables
+  >(LOGIN_MUTATION, {
+    variables: {
+      loginInput: {
+        email: watch('email'),
+        password: watch('password'),
+      },
+    },
+    onCompleted: (data) => {
+      const {
+        login: { isOK, error, token },
+      } = data;
+      if (isOK) console.log(token);
+      else {
+        console.log(error);
+      }
+    },
+  });
+
+  const [loginErrorVisible, setLoginErrorVisible] = useState(false);
+
+  const onValid = async () => {
+    setLoginErrorVisible(true);
+    await loginMutation();
+  };
+  const onInvalid = () => {
     console.log(getValues());
-    if (errors) setShowError(true);
-    else {
-      setShowError(false);
-    }
+    console.log('invalid');
+    setLoginErrorVisible(true);
+    if (errors.email) setValue('email', '');
+    if (errors.password) setValue('password', '');
   };
   return (
-    <div className="flex h-screen items-center justify-center bg-gray-800">
-      <div className="max-w w-full  max-w-lg rounded-lg bg-white  py-5 text-center">
-        <h3 className="text-3xl font-bold text-gray-800 ">Log In</h3>
+    <div className="mt-10 flex h-screen flex-col items-center lg:mt-36">
+      <Helmet>
+        <title>Login | Juber Eats</title>
+      </Helmet>
+      <div className="flex w-full max-w-screen-sm flex-col items-center px-5">
+        <img src={logo} className="mb-10 w-64" />
+        <h4 className="w-full text-left font-mono text-lg">Welcome back</h4>
         <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="mt-5 grid gap-3 px-5 "
+          onSubmit={handleSubmit(onValid, onInvalid)}
+          className="mt-5 mb-5 grid w-full gap-3"
         >
           <input
             {...register('email', {
@@ -43,8 +95,12 @@ export const Login = () => {
             })}
             placeholder="Email"
             className="input"
+            onInput={() => {
+              setLoginErrorVisible(false);
+            }}
           />
           <input
+            type="password"
             {...register('password', {
               required: {
                 value: true,
@@ -52,21 +108,45 @@ export const Login = () => {
               },
               pattern: {
                 value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm,
-                message: '잘못된 비밀번호 양식입니다.',
+                message: '잘못된 비밀번호 형식입니다.',
               },
             })}
             placeholder="Password"
             className="input"
+            onInput={() => {
+              setLoginErrorVisible(false);
+            }}
           />
-          <FormError
-            errorMessage={
-              errors && errors.email
-                ? errors.email.message
-                : errors.password?.message
-            }
+
+          {loginErrorVisible && (
+            <FormError
+              errorMessage={
+                errors.email
+                  ? errors.email.message
+                  : errors.password
+                  ? errors.password.message
+                  : loginMutationResult?.login.error
+                  ? loginMutationResult.login.error
+                  : undefined
+              }
+            />
+          )}
+
+          <Button
+            isValid={isValid}
+            loading={loading}
+            actionText={loading ? 'Loading...' : '로그인'}
           />
-          <button className="btn">Login</button>
         </form>
+        <div>
+          New to Juber?{' '}
+          <Link
+            to="/create-account"
+            className="font-mono text-lime-600 hover:underline"
+          >
+            Create Account
+          </Link>
+        </div>
       </div>
     </div>
   );
