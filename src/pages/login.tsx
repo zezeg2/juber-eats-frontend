@@ -9,7 +9,9 @@ import {
 import logo from '../images/logo.svg';
 import { Button } from '../components/button';
 import { Link } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
+import { authTokenVar, isLoggedInVar } from '../apollo';
+import { LOCALSTORAGE_TOKEN } from '../constants';
 
 const LOGIN_MUTATION = gql`
   mutation LoginMutation($loginInput: LoginInput!) {
@@ -32,11 +34,11 @@ export const Login = () => {
     watch,
     getValues,
     setValue,
-    formState: { errors, isValid },
+    formState: { errors },
     handleSubmit,
-  } = useForm<ILoginForm>({ mode: 'onBlur' });
+  } = useForm<ILoginForm>();
 
-  const [loginMutation, { data: loginMutationResult, loading }] = useMutation<
+  const [loginMutation, { data: loginResult, loading }] = useMutation<
     LoginMutation,
     LoginMutationVariables
   >(LOGIN_MUTATION, {
@@ -50,8 +52,12 @@ export const Login = () => {
       const {
         login: { isOK, error, token },
       } = data;
-      if (isOK) console.log(token);
-      else {
+      if (isOK && token) {
+        localStorage.setItem(LOCALSTORAGE_TOKEN, token);
+        authTokenVar(token);
+        console.log(token);
+        isLoggedInVar(true);
+      } else {
         console.log(error);
       }
     },
@@ -61,11 +67,12 @@ export const Login = () => {
 
   const onValid = async () => {
     setLoginErrorVisible(true);
-    await loginMutation();
+    if (!loading) {
+      await loginMutation();
+    }
   };
   const onInvalid = () => {
     console.log(getValues());
-    console.log('invalid');
     setLoginErrorVisible(true);
     if (errors.email) setValue('email', '');
     if (errors.password) setValue('password', '');
@@ -77,7 +84,7 @@ export const Login = () => {
       </Helmet>
       <div className="flex w-full max-w-screen-sm flex-col items-center px-5">
         <img src={logo} className="mb-10 w-64" />
-        <h4 className="w-full text-left font-mono text-lg">Welcome back</h4>
+        <h4 className="w-full text-left font-mono text-2xl">Welcome back</h4>
         <form
           onSubmit={handleSubmit(onValid, onInvalid)}
           className="mt-5 mb-5 grid w-full gap-3"
@@ -86,11 +93,11 @@ export const Login = () => {
             {...register('email', {
               required: {
                 value: true,
-                message: '이메일을 입력해 주세요.',
+                message: 'Email is required',
               },
               pattern: {
                 value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g,
-                message: '잘못된 이메일 형식입니다.',
+                message: 'Please enter a valid email ',
               },
             })}
             placeholder="Email"
@@ -104,11 +111,12 @@ export const Login = () => {
             {...register('password', {
               required: {
                 value: true,
-                message: '패스워드를 입력해주세요',
+                message: 'Password is required',
               },
               pattern: {
                 value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm,
-                message: '잘못된 비밀번호 형식입니다.',
+                message:
+                  'Password should be at least 8 characters & mix of upper & lowercase letter and number',
               },
             })}
             placeholder="Password"
@@ -125,21 +133,21 @@ export const Login = () => {
                   ? errors.email.message
                   : errors.password
                   ? errors.password.message
-                  : loginMutationResult?.login.error
-                  ? loginMutationResult.login.error
+                  : loginResult?.login.error
+                  ? loginResult.login.error
                   : undefined
               }
             />
           )}
 
           <Button
-            isValid={isValid}
+            isValid={watch('email') && watch('password') ? true : false}
             loading={loading}
-            actionText={loading ? 'Loading...' : '로그인'}
+            actionText={loading ? 'Loading...' : 'Login'}
           />
         </form>
         <div>
-          New to Juber?{' '}
+          New to Juber?{'  '}
           <Link
             to="/create-account"
             className="font-mono text-lime-600 hover:underline"
