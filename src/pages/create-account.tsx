@@ -60,7 +60,7 @@ export const CreateAccount = () => {
             createAccount: { isOK, error },
           } = data;
           if (isOK) {
-            history.push('/login');
+            history.push('/');
           }
         },
       },
@@ -147,8 +147,8 @@ export const CreateAccount = () => {
           <Button isValid={isValid} loading={loading} actionText="join" />
         </form>
         <div>
-          Already have an account?{'  '}
-          <Link to="/login" className="font-mono text-lime-600 hover:underline">
+          Already have an account?{' '}
+          <Link to="/" className="font-mono text-lime-600 hover:underline">
             Log in Now!
           </Link>
         </div>
