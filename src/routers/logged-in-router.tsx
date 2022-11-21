@@ -1,14 +1,24 @@
 import React from 'react';
 import { authTokenVar, isLoggedInVar } from '../apollo';
-import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
-import { UserRole } from '../__api__/globalTypes';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+
 import { Restaurants } from '../pages/client/restaurants';
 import { Header } from '../components/header';
 import { useMe } from '../hooks/useMe';
+import { NotFound } from '../pages/404';
+import { ConfirmEmail } from '../pages/users/confirm';
+import { UserRole } from '../__api__/globalTypes';
+import { EditProfile } from '../pages/users/editProfile';
 
 const ClientRoutes = [
-  <Route path="/" exact={true}>
+  <Route key={1} path="/" exact={true}>
     <Restaurants />
+  </Route>,
+  <Route key={2} path="/confirm">
+    <ConfirmEmail />
+  </Route>,
+  <Route key={3} path="/edit-profile">
+    <EditProfile />
   </Route>,
 ];
 
@@ -28,7 +38,10 @@ export const LoggedInRouter = () => {
           <Header />
           <Switch>
             {ClientRoutes}
-            <Redirect to="/"></Redirect>
+            {/*<Redirect to="/"></Redirect>*/}
+            <Route>
+              <NotFound />
+            </Route>
           </Switch>
         </BrowserRouter>
       )}

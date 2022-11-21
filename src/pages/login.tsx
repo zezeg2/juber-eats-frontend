@@ -63,17 +63,17 @@ export const Login = () => {
     },
   });
 
-  const [loginErrorVisible, setLoginErrorVisible] = useState(false);
+  const [errorVisible, setErrorVisible] = useState(false);
 
   const onValid = async () => {
-    setLoginErrorVisible(true);
+    setErrorVisible(true);
     if (!loading) {
       await loginMutation();
     }
   };
   const onInvalid = () => {
     console.log(getValues());
-    setLoginErrorVisible(true);
+    setErrorVisible(true);
     if (errors.email) setValue('email', '');
     if (errors.password) setValue('password', '');
   };
@@ -103,7 +103,7 @@ export const Login = () => {
             placeholder="Email"
             className="input"
             onInput={() => {
-              setLoginErrorVisible(false);
+              setErrorVisible(false);
             }}
           />
           <input
@@ -122,11 +122,11 @@ export const Login = () => {
             placeholder="Password"
             className="input"
             onInput={() => {
-              setLoginErrorVisible(false);
+              setErrorVisible(false);
             }}
           />
 
-          {loginErrorVisible && (
+          {errorVisible && (
             <FormError
               errorMessage={
                 errors.email

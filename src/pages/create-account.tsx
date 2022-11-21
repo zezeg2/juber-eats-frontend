@@ -7,13 +7,13 @@ import { FormError } from '../components/form-error';
 import { Button } from '../components/button';
 import { Link, useHistory } from 'react-router-dom';
 import {
-  CreateAccountMutation,
-  CreateAccountMutationVariables,
-} from '../__api__/CreateAccountMutation';
+  createAccount,
+  createAccountVariables,
+} from '../__api__/createAccount';
 import { UserRole } from '../__api__/globalTypes';
 
 const CREATE_ACCOUNT_MUTATION = gql`
-  mutation CreateAccountMutation($createAccountInput: CreateAccountInput!) {
+  mutation createAccount($createAccountInput: CreateAccountInput!) {
     createAccount(input: $createAccountInput) {
       isOK
       error
@@ -45,7 +45,7 @@ export const CreateAccount = () => {
     useState(false);
 
   const [createAccountMutation, { data: createAccountResult, loading }] =
-    useMutation<CreateAccountMutation, CreateAccountMutationVariables>(
+    useMutation<createAccount, createAccountVariables>(
       CREATE_ACCOUNT_MUTATION,
       {
         variables: {

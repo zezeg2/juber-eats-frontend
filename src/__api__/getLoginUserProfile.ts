@@ -18,9 +18,9 @@ export interface getLoginUserProfile_getLoginUserProfile_profile {
 }
 
 export interface getLoginUserProfile_getLoginUserProfile {
-  __typename: "UserProfileOutput";
+  __typename: "LoginUserProfileOutput";
   isOK: boolean;
-  profile: getLoginUserProfile_getLoginUserProfile_profile | null;
+  profile: getLoginUserProfile_getLoginUserProfile_profile;
 }
 
 export interface getLoginUserProfile {
