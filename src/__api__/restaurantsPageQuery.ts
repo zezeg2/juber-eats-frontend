@@ -36,6 +36,7 @@ export interface restaurantsPageQuery_allRestaurants_result {
   category: restaurantsPageQuery_allRestaurants_result_category | null;
   address: string;
   isPromoted: boolean;
+  coverImage: string;
 }
 
 export interface restaurantsPageQuery_allRestaurants {
@@ -53,5 +54,5 @@ export interface restaurantsPageQuery {
 }
 
 export interface restaurantsPageQueryVariables {
-  input?: AllRestaurantsInput | null;
+  input: AllRestaurantsInput;
 }
