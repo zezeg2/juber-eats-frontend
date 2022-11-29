@@ -34,9 +34,9 @@ export interface restaurantsPageQuery_allRestaurants_result {
   id: number;
   name: string;
   category: restaurantsPageQuery_allRestaurants_result_category | null;
-  address: string;
-  isPromoted: boolean;
   coverImage: string;
+  isPromoted: boolean;
+  address: string;
 }
 
 export interface restaurantsPageQuery_allRestaurants {

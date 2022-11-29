@@ -6,17 +6,17 @@ import {
 } from '../../__api__/restaurantsPageQuery';
 import { Restaurant } from '../../components/restaurant';
 import searchBackground from '../../images/search-background.png';
+import { useForm } from 'react-hook-form';
+import { useHistory } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
+import { CATEGORY_FRAGMENT, RESTAURANT_FRAGMENT } from '../../fragments';
 
 const RESTAURANTS_QUERY = gql`
   query restaurantsPageQuery($input: AllRestaurantsInput!) {
     allCategories {
       isOK
       categories {
-        id
-        name
-        coverImage
-        slug
-        restaurantCount
+        ...CategoryParts
       }
     }
     allRestaurants(input: $input) {
@@ -25,18 +25,18 @@ const RESTAURANTS_QUERY = gql`
       totalPage
       totalCount
       result {
-        id
-        name
-        category {
-          name
-        }
-        address
-        isPromoted
-        coverImage
+        ...RestaurantParts
       }
     }
   }
+  ${CATEGORY_FRAGMENT}
+  ${RESTAURANT_FRAGMENT}
 `;
+
+interface IFromProps {
+  searchTerm: string;
+}
+
 export const Restaurants = () => {
   const [page, setPage] = useState(1);
   const { data, loading } = useQuery<
@@ -51,16 +51,32 @@ export const Restaurants = () => {
   });
   const onNextPageClick = () => setPage((current) => current + 1);
   const onPrevPageClick = () => setPage((current) => current - 1);
-  console.log(data);
+  const { register, handleSubmit, getValues } = useForm<IFromProps>();
+  const history = useHistory();
+  const onSearchSubmit = () => {
+    const { searchTerm } = getValues();
+    console.log(getValues());
+    history.push({
+      pathname: '/search',
+      search: `term=${searchTerm}`,
+      state: { searchTerm },
+    });
+  };
   return (
     <div>
+      <Helmet>
+        <title>Home : Juber Eats</title>
+      </Helmet>
       <form
-        className="mb-10 flex w-full items-center justify-center bg-gray-800 py-32 md:py-72"
+        onSubmit={handleSubmit(onSearchSubmit)}
+        className="mb-10 flex w-full items-center justify-center bg-gray-800 bg-cover py-32 md:py-72"
         style={{ backgroundImage: `url(${searchBackground})` }}
       >
         <input
+          {...register('searchTerm', { required: true, minLength: 2 })}
+          id="searchTerm"
           type="Search"
-          className="input w-1/2 rounded-md border-0 md:w-1/3"
+          className="input w-3/4 rounded-md border-0 md:w-1/3"
           placeholder="Search restaurants..."
         />
         <button className="m-4 rounded-md bg-emerald-700 p-3 text-lg font-medium text-white">
@@ -87,7 +103,10 @@ export const Restaurants = () => {
           <div className="content-center justify-center pb-20">
             <div className="ml-16 sm:m-0">
               {data?.allCategories.categories?.map((category) => (
-                <div className="m-4 inline-flex h-20 w-40 cursor-pointer rounded-lg bg-orange-100 p-2 text-lg shadow hover:bg-lime-100">
+                <div
+                  key={category.id}
+                  className="m-4 inline-flex h-20 w-40 cursor-pointer rounded-lg bg-orange-100 p-2 text-lg shadow hover:bg-lime-100"
+                >
                   {category.name}
                   <img
                     className="w-20"
@@ -100,6 +119,7 @@ export const Restaurants = () => {
             <div className="grid lg:grid-cols-2">
               {data?.allRestaurants.result?.map((restaurant) => (
                 <Restaurant
+                  key={restaurant.id}
                   id={restaurant.id + ''}
                   coverImage={restaurant.coverImage}
                   name={restaurant.name}

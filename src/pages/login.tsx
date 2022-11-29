@@ -55,10 +55,7 @@ export const Login = () => {
       if (isOK && token) {
         localStorage.setItem(LOCALSTORAGE_TOKEN, token);
         authTokenVar(token);
-        console.log(token);
         isLoggedInVar(true);
-      } else {
-        console.log(error);
       }
     },
   });

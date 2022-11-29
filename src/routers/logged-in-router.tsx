@@ -9,6 +9,7 @@ import { NotFound } from '../pages/404';
 import { ConfirmEmail } from '../pages/users/confirm';
 import { UserRole } from '../__api__/globalTypes';
 import { EditProfile } from '../pages/users/editProfile';
+import { Search } from '../pages/client/search';
 
 const ClientRoutes = [
   <Route key={1} path="/" exact={true}>
@@ -19,6 +20,9 @@ const ClientRoutes = [
   </Route>,
   <Route key={3} path="/edit-profile">
     <EditProfile />
+  </Route>,
+  <Route key={4} path="/search">
+    <Search />
   </Route>,
 ];
 
@@ -46,15 +50,15 @@ export const LoggedInRouter = () => {
         </BrowserRouter>
       )}
 
-      <button
-        onClick={() => {
-          isLoggedInVar(false);
-          authTokenVar(null);
-          localStorage.clear();
-        }}
-      >
-        Click to logout
-      </button>
+      {/*<button*/}
+      {/*  onClick={() => {*/}
+      {/*    isLoggedInVar(false);*/}
+      {/*    authTokenVar(null);*/}
+      {/*    localStorage.clear();*/}
+      {/*  }}*/}
+      {/*>*/}
+      {/*  Click to logout*/}
+      {/*</button>*/}
     </div>
   );
 };
