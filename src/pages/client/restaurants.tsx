@@ -7,7 +7,7 @@ import {
 import { Restaurant } from '../../components/restaurant';
 import searchBackground from '../../images/search-background.png';
 import { useForm } from 'react-hook-form';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { CATEGORY_FRAGMENT, RESTAURANT_FRAGMENT } from '../../fragments';
 
@@ -103,16 +103,20 @@ export const Restaurants = () => {
           <div className="content-center justify-center pb-20">
             <div className="ml-16 sm:m-0">
               {data?.allCategories.categories?.map((category) => (
-                <div
-                  key={category.id}
-                  className="m-4 inline-flex h-20 w-40 cursor-pointer rounded-lg bg-orange-100 p-2 text-lg shadow hover:bg-lime-100"
-                >
-                  {category.name}
-                  <img
-                    className="w-20"
-                    src={category.coverImage ? category.coverImage : undefined}
-                  />
-                </div>
+                <Link to={`/category/${category.slug}`}>
+                  <div
+                    key={category.id}
+                    className="m-4 inline-flex h-20 w-40 cursor-pointer rounded-lg bg-orange-100 p-2 text-lg shadow hover:bg-lime-100"
+                  >
+                    {category.name}
+                    <img
+                      className="w-20"
+                      src={
+                        category.coverImage ? category.coverImage : undefined
+                      }
+                    />
+                  </div>
+                </Link>
               ))}
             </div>
             <hr className="my-10" />

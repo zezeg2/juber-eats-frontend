@@ -28,6 +28,11 @@ export interface EditProfileInput {
   password?: string | null;
 }
 
+export interface GetCategoryInput {
+  page?: number | null;
+  slug: string;
+}
+
 export interface LoginInput {
   email: string;
   password: string;

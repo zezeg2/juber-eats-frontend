@@ -1,5 +1,4 @@
 import React from 'react';
-import { authTokenVar, isLoggedInVar } from '../apollo';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import { Restaurants } from '../pages/client/restaurants';
@@ -10,6 +9,7 @@ import { ConfirmEmail } from '../pages/users/confirm';
 import { UserRole } from '../__api__/globalTypes';
 import { EditProfile } from '../pages/users/editProfile';
 import { Search } from '../pages/client/search';
+import { Category } from '../pages/client/category';
 
 const ClientRoutes = [
   <Route key={1} path="/" exact={true}>
@@ -23,6 +23,9 @@ const ClientRoutes = [
   </Route>,
   <Route key={4} path="/search">
     <Search />
+  </Route>,
+  <Route key={5} path="/category/:slug">
+    <Category />
   </Route>,
 ];
 
