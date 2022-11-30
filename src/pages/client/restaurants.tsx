@@ -5,11 +5,17 @@ import {
   restaurantsPageQueryVariables,
 } from '../../__api__/restaurantsPageQuery';
 import { Restaurant } from '../../components/restaurant';
-import searchBackground from '../../images/search-background.png';
-import { useForm } from 'react-hook-form';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { CATEGORY_FRAGMENT, RESTAURANT_FRAGMENT } from '../../fragments';
+import { SearchForm } from '../../components/search-form';
+import { Paragraph } from '../../components/paragraph';
+import {
+  EXPLORE_BY_CATEGORY,
+  PROVIDENCE_FOOD_DELIVERY,
+  PROVIDENCE_FOOD_DELIVERY_CONTENT,
+} from '../../paragraphs';
+import { PageNavigator } from '../../components/page-navigator';
 
 const RESTAURANTS_QUERY = gql`
   query restaurantsPageQuery($input: AllRestaurantsInput!) {
@@ -32,11 +38,6 @@ const RESTAURANTS_QUERY = gql`
   ${CATEGORY_FRAGMENT}
   ${RESTAURANT_FRAGMENT}
 `;
-
-interface IFromProps {
-  searchTerm: string;
-}
-
 export const Restaurants = () => {
   const [page, setPage] = useState(1);
   const { data, loading } = useQuery<
@@ -49,56 +50,19 @@ export const Restaurants = () => {
       },
     },
   });
-  const onNextPageClick = () => setPage((current) => current + 1);
-  const onPrevPageClick = () => setPage((current) => current - 1);
-  const { register, handleSubmit, getValues } = useForm<IFromProps>();
-  const history = useHistory();
-  const onSearchSubmit = () => {
-    const { searchTerm } = getValues();
-    console.log(getValues());
-    history.push({
-      pathname: '/search',
-      search: `term=${searchTerm}`,
-      state: { searchTerm },
-    });
-  };
   return (
     <div>
       <Helmet>
         <title>Home : Juber Eats</title>
       </Helmet>
-      <form
-        onSubmit={handleSubmit(onSearchSubmit)}
-        className="mb-10 flex w-full items-center justify-center bg-gray-800 bg-cover py-32 md:py-72"
-        style={{ backgroundImage: `url(${searchBackground})` }}
-      >
-        <input
-          {...register('searchTerm', { required: true, minLength: 2 })}
-          id="searchTerm"
-          type="Search"
-          className="input w-3/4 rounded-md border-0 md:w-1/3"
-          placeholder="Search restaurants..."
-        />
-        <button className="m-4 rounded-md bg-emerald-700 p-3 text-lg font-medium text-white">
-          Find Food
-        </button>
-      </form>
+      <SearchForm />
       <div className="mx-auto w-full max-w-xl md:max-w-screen-2xl">
-        <div className="text-center sm:text-left">
-          <h1 className="mb-4 text-4xl font-bold">Providence Food Delivery</h1>
-          <p className="text-left">
-            Have your favorite Providence restaurant food delivered to your door
-            with Uber Eats. Whether you want to order breakfast, lunch, dinner,
-            or a snack, Uber Eats makes it easy to discover new and nearby
-            places to eat in Providence. Browse tons of food delivery options,
-            place your order, and track it by the minute.
-          </p>
-        </div>
-
+        <Paragraph
+          title={PROVIDENCE_FOOD_DELIVERY}
+          content={PROVIDENCE_FOOD_DELIVERY_CONTENT}
+        />
         <hr className="my-10" />
-        <div className="text-center sm:text-left">
-          <h1 className="mb-10 text-4xl font-bold">Explore by category</h1>
-        </div>
+        <Paragraph title={EXPLORE_BY_CATEGORY} />
         {!loading && (
           <div className="content-center justify-center pb-20">
             <div className="ml-16 sm:m-0">
@@ -132,31 +96,11 @@ export const Restaurants = () => {
                 />
               ))}
             </div>
-            <div className="mx-auto mt-10 grid max-w-sm grid-cols-3 items-center text-center">
-              {page > 1 ? (
-                <button
-                  onClick={onPrevPageClick}
-                  className="text-lg font-medium hover:text-lime-600 hover:outline-none "
-                >
-                  &larr;
-                </button>
-              ) : (
-                <div></div>
-              )}
-              <span>
-                Page {page} of {data?.allRestaurants.totalPage}
-              </span>
-              {page !== data?.allRestaurants.totalPage ? (
-                <button
-                  onClick={onNextPageClick}
-                  className="text-lg font-medium hover:text-lime-600 hover:outline-none "
-                >
-                  &rarr;
-                </button>
-              ) : (
-                <div></div>
-              )}
-            </div>
+            <PageNavigator
+              totalPage={data ? data.allRestaurants.totalPage : null}
+              page={page}
+              setPage={setPage}
+            />
           </div>
         )}
       </div>

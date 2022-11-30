@@ -3,6 +3,7 @@ import { useLocation, useParams } from 'react-router-dom';
 import { gql, useQuery } from '@apollo/client';
 import { CATEGORY_FRAGMENT, RESTAURANT_FRAGMENT } from '../../fragments';
 import { category, categoryVariables } from '../../__api__/category';
+import { SearchForm } from '../../components/search-form';
 
 const CATEGORY_QUERY = gql`
   query category($input: GetCategoryInput!) {
@@ -22,9 +23,11 @@ const CATEGORY_QUERY = gql`
   ${CATEGORY_FRAGMENT}
   ${RESTAURANT_FRAGMENT}
 `;
+
 interface ICategoryParams {
   slug: string;
 }
+
 export const Category = () => {
   const { slug } = useParams<ICategoryParams>();
   const { data, loading } = useQuery<category, categoryVariables>(
@@ -39,7 +42,7 @@ export const Category = () => {
   console.log(data);
   return (
     <div>
-      <h1>Category</h1>
+      <SearchForm />
     </div>
   );
 };
