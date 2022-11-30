@@ -7,4 +7,10 @@
 .btn {
     @apply mt-3 text-lg font-medium text-white py-4 bg-lime-600 hover:bg-lime-700 transition-colors;
 }
+.layout {
+    @apply mx-auto w-full max-w-xl md:max-w-screen-2xl
+}
+.content-layout {
+    @apply content-center justify-center pb-20
+}
 @tailwind utilities;
