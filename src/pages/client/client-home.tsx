@@ -16,6 +16,8 @@ import {
 import { PageNavigator } from '../../components/page-navigator';
 import { RestaurantList } from '../../components/restaurant-list';
 import { CategoryList } from '../../components/category-list';
+import { Link } from 'react-router-dom';
+import { Header } from '../../components/header';
 
 const RESTAURANTS_QUERY = gql`
   query restaurantsPageQuery($input: AllRestaurantsInput!) {
@@ -38,7 +40,7 @@ const RESTAURANTS_QUERY = gql`
   ${CATEGORY_FRAGMENT}
   ${RESTAURANT_FRAGMENT}
 `;
-export const Restaurants = () => {
+export const ClientHome = () => {
   const [page, setPage] = useState(1);
   const { data, loading } = useQuery<
     restaurantsPageQuery,
@@ -56,8 +58,12 @@ export const Restaurants = () => {
       <Helmet>
         <title>Home : Juber Eats</title>
       </Helmet>
+      <Header />
       <SearchForm />
       <div className="layout">
+        <div className="mb-8 text-xl text-gray-400">
+          <Link to="/">categories ＞ </Link>
+        </div>
         <Paragraph
           title={PROVIDENCE_FOOD_DELIVERY}
           content={PROVIDENCE_FOOD_DELIVERY_CONTENT}

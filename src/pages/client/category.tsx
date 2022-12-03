@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { gql, useQuery } from '@apollo/client';
 import { CATEGORY_FRAGMENT, RESTAURANT_FRAGMENT } from '../../fragments';
 import { category, categoryVariables } from '../../__api__/category';
@@ -8,6 +8,7 @@ import { Paragraph } from '../../components/paragraph';
 import { Helmet } from 'react-helmet-async';
 import { Restaurant } from '../../components/restaurant';
 import { PageNavigator } from '../../components/page-navigator';
+import { Header } from '../../components/header';
 
 const CATEGORY_QUERY = gql`
   query category($input: GetCategoryInput!) {
@@ -53,8 +54,13 @@ export const Category = () => {
       <Helmet>
         <title>Category:{slug} | Juber Eats</title>
       </Helmet>
+      <Header />
       <SearchForm />
       <div className="layout">
+        <div className="mb-8 text-xl text-gray-400">
+          <Link to="/">categories </Link>＞{' '}
+          <div className="inline text-black">{slug}</div>
+        </div>
         <Paragraph
           title={`${
             data ? data.getCategoryBySlug.result?.name : ''

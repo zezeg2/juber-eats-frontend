@@ -1,8 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
-import { Restaurants } from '../pages/client/restaurants';
-import { Header } from '../components/header';
+import { ClientHome } from '../pages/client/client-home';
 import { useMe } from '../hooks/useMe';
 import { NotFound } from '../pages/404';
 import { ConfirmEmail } from '../pages/users/confirm';
@@ -13,7 +12,7 @@ import { Category } from '../pages/client/category';
 
 const ClientRoutes = [
   <Route key={1} path="/" exact={true}>
-    <Restaurants />
+    <ClientHome />
   </Route>,
   <Route key={2} path="/confirm">
     <ConfirmEmail />
@@ -42,7 +41,6 @@ export const LoggedInRouter = () => {
     <div>
       {data.getLoginUserProfile.profile?.role === UserRole.Client && (
         <BrowserRouter>
-          <Header />
           <Switch>
             {ClientRoutes}
             {/*<Redirect to="/"></Redirect>*/}

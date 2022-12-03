@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { gql, useLazyQuery } from '@apollo/client';
@@ -7,6 +7,7 @@ import {
   searchRestaurant,
   searchRestaurantVariables,
 } from '../../__api__/searchRestaurant';
+import { HeaderWithSearch } from '../../components/header-with-search';
 
 const SEARCH_RESTAURANT = gql`
   query searchRestaurant($input: SearchRestaurantInput!) {
@@ -25,17 +26,18 @@ const SEARCH_RESTAURANT = gql`
 export const Search = () => {
   const location = useLocation();
   const history = useHistory();
+  const [page, setPage] = useState(1);
   const [fetchNow, { loading, data, called }] = useLazyQuery<
     searchRestaurant,
     searchRestaurantVariables
   >(SEARCH_RESTAURANT);
+  const [_, query] = location.search.split('?term=');
   useEffect(() => {
-    const [_, query] = location.search.split('?term=');
     if (!query) return history.replace('/');
     fetchNow({
       variables: {
         input: {
-          page: 1,
+          page,
           query,
         },
       },
@@ -46,9 +48,12 @@ export const Search = () => {
   return (
     <div>
       <Helmet>
-        <title>Home : Juber Eats</title>
+        <title>Search : {query} | Juber Eats</title>
       </Helmet>
-      <h1>Search Page</h1>;
+      <HeaderWithSearch />
+      <div className="layout">
+        <h1>Search Page</h1>
+      </div>
     </div>
   );
 };
