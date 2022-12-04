@@ -1,6 +1,6 @@
 module.exports = {
   client: {
-    include: ['./src/**/*.tsx'],
+    include: ['./src/**/*.{ts,tsx}'],
     tagName: 'gql',
     service: {
       name: 'juber-eats-backend',

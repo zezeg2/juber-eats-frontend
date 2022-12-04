@@ -5,6 +5,7 @@ import { useMe } from '../../hooks/useMe';
 import { gql, useApolloClient, useMutation } from '@apollo/client';
 import { editProfile, editProfileVariables } from '../../__api__/editProfile';
 import { useHistory } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
 const EDIT_PROFILE_MUTATION = gql`
   mutation editProfile($input: EditProfileInput!) {
@@ -62,7 +63,7 @@ export const EditProfile = () => {
   const {
     register,
     watch,
-    formState: { errors, isValid },
+    formState: { isValid },
     handleSubmit,
     getValues,
   } = useForm<IEditProfileForm>({
@@ -87,6 +88,9 @@ export const EditProfile = () => {
   };
   return (
     <div className="mt-52 flex flex-col items-center justify-center">
+      <Helmet>
+        <title>Edit Profile | Juber Eats</title>
+      </Helmet>
       <h4 className="mb-3 text-2xl font-semibold">Edit Profile</h4>
       <form
         className="mt-5 mb-5 grid w-full max-w-screen-sm gap-3"
